@@ -3,6 +3,15 @@
 PowerBI is a business analytics solution that aims to provide interactive visualization and share insights across your organization.
 PowerBI writer's purpose is strive to aid users defining destinated table relationships and exporting structured and enriched tables into PowerBI business analytics platform.
 
+## PowerBI API Limitations
+
+1. 75 max columns
+2. 1,000,000 rows added per hour per dataset
+3. 120 POST rows requests per minute per dataset
+4. 200,000 max rows stored per table in FIFO dataset
+5. 5,000,000 max rows stored per table
+6. 4,000 characters per value for string column
+
 ## Configurations
 
 Each extractor configurations are aimed to export `one` dataset to PowerBI platform. Authentication process will be handled by Keboola OAuth Broker API.
