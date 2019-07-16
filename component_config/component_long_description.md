@@ -1,2 +1,2 @@
-Testing functional sample extractor for purposes of the python component template. 
-Implements partial Hubspot extractor using the public sandbox token.
+PowerBI is a business analytics solution that aims to provide interactive visualization and share insights across your organization.
+PowerBI writer's purpose is strive to aid users defining destinated table relationships and exporting structured and enriched tables into PowerBI business analytics platform.

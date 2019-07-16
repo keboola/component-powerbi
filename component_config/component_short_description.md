@@ -1,1 +1,1 @@
-Testing functional sample extractor for purposes of the python component template. 
+Microsoft business analytics solution aims to provide interactive visualization and share insights across your organization.
