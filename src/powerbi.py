@@ -64,8 +64,15 @@ class PowerBI():
         }
         response = self.get_request(url, header, {})
         if response.status_code != 200:
-            logging.error(
-                "{0} - {1}".format(response.status_code, response.json()))
+            if response.status_code == 400:
+                logging.error("{} - Malformed request. Please contact support.".format(response.status_code))
+            elif response.status_code == 401 or response.status_code == 403:
+                logging.error(
+                    "{0} - Authorization failed. Please check account privileges.".format(response.status_code))
+            elif response.status_code == 500:
+                logging.error(
+                    "{} - Internal error. Please try again".format(response.status_code)
+                )
             sys.exit(1)
 
         response_json = response.json()

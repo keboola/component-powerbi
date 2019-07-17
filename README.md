@@ -1,7 +1,7 @@
 # Keboola PowerBI Writer
 
 PowerBI is a business analytics solution that aims to provide interactive visualization and share insights across your organization.
-PowerBI writer's purpose is strive to aid users defining destinated table relationships and exporting structured and enriched tables into PowerBI business analytics platform.
+PowerBI writer's purpose is strive to aid users defining designated table relationships and exporting structured and enriched tables into PowerBI business analytics platform.
 
 ## PowerBI API Limitations
 
@@ -14,7 +14,7 @@ PowerBI writer's purpose is strive to aid users defining destinated table relati
 
 ## Configurations
 
-Each extractor configurations are aimed to export `one` dataset to PowerBI platform. Authentication process will be handled by Keboola OAuth Broker API.
+Each extractor configuration can only exported `one` dataset to PowerBI. Writer will be using the data_type defined in metadata in Keboola Storage. If data_type is not configured for the input table, writer will automatically assign that column as `string`.
 
 1. Access Token - Required
     - TEMPORARY: users are required to manually fetch the access_token via the Microsoft PowerBI focus mode until the Oauth2 is setup accordingly for this component
@@ -52,3 +52,25 @@ Each extractor configurations are aimed to export `one` dataset to PowerBI platf
         4. Foreign Key Column Name
             - Primary key of the target table
             - Input format: ```string```
+
+        
+        ### Example
+
+        Tables|Primary Key
+        -|-
+        `Order`|order_id
+        `Order-Item`|order_item_id
+
+        `Order` table contains a list of invoices; `Order-Item` contains the items that are purchased. Every `Order-Item` should have an `Order`'s order_id attached to it.
+
+        ### Relationship
+
+        `Order`|-|`Order-Item`
+        -|-|-
+        One|to|Many
+
+        ### Sample Relationship Configuration
+
+        Primary Key Table|Primary Key Column Name|Foreign Key Table|Foreign Key Column Name
+        -|-|-|-
+        `Order`|order_id|`Order-Item`|order_id

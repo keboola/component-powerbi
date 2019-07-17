@@ -6,12 +6,12 @@ Template Component main class.
 import logging
 import sys
 import json
-from datetime import datetime
+from datetime import datetime  # noqa
 import pandas as pd
 
 from kbc.env_handler import KBCEnvHandler
-from kbc.result import KBCTableDef
-from kbc.result import ResultWriter
+from kbc.result import KBCTableDef  # noqa
+from kbc.result import ResultWriter  # noqa
 
 from powerbi import PowerBI
 
@@ -74,7 +74,7 @@ class Component(KBCEnvHandler):
         # input file
         table_list = []
         for table in tables:
-            name = table["full_path"]
+            name = table["full_path"] # noqa
             if mapping == "input_mapping":
                 destination = table["destination"]
             elif mapping == "output_mapping":
@@ -95,8 +95,8 @@ class Component(KBCEnvHandler):
 
         # Activate when oauth in KBC is ready
         # Get Authorization Token
-        authorization = self.configuration.get_authorization()
-        oauth_token = self.get_oauth_token(authorization)
+        # authorization = self.configuration.get_authorization()
+        # oauth_token = self.get_oauth_token(authorization)
 
         # Configuration parameters
         params = self.cfg_params  # noqa
@@ -116,7 +116,7 @@ class Component(KBCEnvHandler):
             input_tables=in_table_names,
             table_relationship=table_relationship
         )
-        
+
         # Dropping rows in table
         # will find better ways to load incrementally
         # currently have issues to load the same table consecutively

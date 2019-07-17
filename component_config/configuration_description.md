@@ -1,7 +1,9 @@
-Each extractor configuration can only exported `one` dataset to PowerBI.
+Each extractor configuration can only exported `one` dataset to PowerBI. Writer will be using the data_type defined in metadata in Keboola Storage. If data_type is not configured for the input table, writer will automatically assign that column as `string`.
+
+# Parameters
 
 1. Access Token - Required
-    - TEMPORARY: users are required to manually fetch the access_token via the Microsoft PowerBI focus mode until the Oauth2 is setup accordingly for this component
+    - *TEMPORARY*: users are required to manually fetch the access_token via the Microsoft PowerBI focus mode until the Oauth2 is setup accordingly for this component
     - The temporary token will stay active for one hour
     - How to:
         1. Follow this [Link](https://docs.microsoft.com/en-us/rest/api/power-bi/pushdatasets/datasets_postrowsingroup#code-try-0)
@@ -36,3 +38,27 @@ Each extractor configuration can only exported `one` dataset to PowerBI.
         4. Foreign Key Column Name
             - Primary key of the target table
             - Input format: ```string```
+
+        ### Example
+
+        Tables|Primary Key
+        -|-
+        `Order`|order_id
+        `Order-Item`|order_item_id
+
+        `Order` table contains a list of invoices; `Order-Item` contains the items that are purchased. Every `Order-Item` should have an `Order`'s order_id attached to it.
+
+        ### Relationship
+
+        `Order`|-|`Order-Item`
+        -|-|-
+        One|to|Many
+
+        ### Sample Relationship Configuration
+
+        Primary Key Table|Primary Key Column Name|Foreign Key Table|Foreign Key Column Name
+        -|-|-|-
+        `Order`|order_id|`Order-Item`|order_id
+
+
+        
