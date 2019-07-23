@@ -49,5 +49,7 @@ Each extractor configuration can only exported `one` dataset to PowerBI. Writer 
         -|-|-|-
         `Order`|order_id|`Order-Item`|order_id
 
+For more details, please visit [here](https://bitbucket.org/kds_consulting_team/kds-team.wr-powerbi/src/master/README.md).
+
 
         

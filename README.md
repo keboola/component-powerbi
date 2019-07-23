@@ -6,6 +6,7 @@ PowerBI writer's purpose is strive to aid users defining designated table relati
 ## PowerBI API Limitations
 
 To POST Rows
+
 1. 75 max columns
 2. 75 max tables
 3. 10,000 max rows per single POST rows request
