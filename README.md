@@ -5,12 +5,16 @@ PowerBI writer's purpose is strive to aid users defining designated table relati
 
 ## PowerBI API Limitations
 
+To POST Rows
 1. 75 max columns
-2. 1,000,000 rows added per hour per dataset
-3. 120 POST rows requests per minute per dataset
-4. 200,000 max rows stored per table in FIFO dataset
-5. 5,000,000 max rows stored per table
-6. 4,000 characters per value for string column
+2. 75 max tables
+3. 10,000 max rows per single POST rows request
+4. 1,000,000 rows added per hour per dataset
+5. 120 POST rows requests per minute per dataset
+6. If table has 250,000 or more rows, 120 POST rows requests per hour per dataset
+7. 200,000 max rows stored per table in FIFO dataset
+8. 5,000,000 max rows stored per table in 'none retention policy' dataset
+9. 4,000 characters per value for string column in POST rows operation
 
 ## Configurations
 

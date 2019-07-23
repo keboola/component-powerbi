@@ -2,19 +2,12 @@
   "type": "object",
   "title": "PowerBI Configuration",
   "required": [
-      "#access_token",
       "dataset",
       "workspace",
       "incremental",
       "table_relationship"
   ],
   "properties": {
-      "#access_token": {
-          "type": "string",
-          "title": "Access Token",
-          "propertyOrder": 100,
-          "descriptions": "TEMPORARY: Users have to manually fetch access_token until Oauth2 setup is completed."
-      },
       "workspace": {
           "type": "string",
           "title": "Workspace",

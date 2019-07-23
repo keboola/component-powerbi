@@ -7,6 +7,7 @@ import logging
 import sys
 import json
 from datetime import datetime  # noqa
+import time
 import pandas as pd
 
 from kbc.env_handler import KBCEnvHandler
@@ -61,7 +62,7 @@ class Component(KBCEnvHandler):
         """
 
         data = json.loads(config["oauth_api"]["credentials"]["#data"])
-        token = data["oauth_token"]
+        token = data["access_token"]
 
         return token
 
@@ -95,8 +96,8 @@ class Component(KBCEnvHandler):
 
         # Activate when oauth in KBC is ready
         # Get Authorization Token
-        # authorization = self.configuration.get_authorization()
-        # oauth_token = self.get_oauth_token(authorization)
+        authorization = self.configuration.get_authorization()
+        oauth_token = self.get_oauth_token(authorization)
 
         # Configuration parameters
         params = self.cfg_params  # noqa
@@ -106,7 +107,7 @@ class Component(KBCEnvHandler):
         dataset = dataset_array[0]["dataset_input"]
         table_relationship = params["table_relationship"]
         # TEMP authorization method
-        oauth_token = params["#access_token"]
+        # oauth_token = params["#access_token"]
 
         _PowerBI = PowerBI(
             oauth_token=oauth_token,
@@ -132,12 +133,24 @@ class Component(KBCEnvHandler):
             while not _PowerBI.dataset_found:
                 _PowerBI.dataset_found = _PowerBI.search_datasetid()
 
+        # API limits parameters
+        start_time = time.time()
+        one_min_in_sec = 60
+        num_of_post_request = 0
         for file in _PowerBI.input_table_columns:
             logging.info("Loading dataset: {0}".format(file))
 
-            for chunk in pd.read_csv(DEFAULT_TABLE_SOURCE+file+'.csv', dtype=str, chunksize=1000):
+            for chunk in pd.read_csv(DEFAULT_TABLE_SOURCE+file+'.csv', dtype=str, chunksize=10000):
                 rows = chunk.to_json(orient='records')
-                _PowerBI.post_rows(file, rows)
+                if (int(time.time())-start_time) <= one_min_in_sec and num_of_post_request <= 120:
+                    _PowerBI.post_rows(file, rows)
+                    num_of_post_request += 1
+                else:
+                    wait_sec = one_min_in_sec - start_time
+                    time.sleep(wait_sec)
+                    start_time = time.time()
+                    _PowerBI.post_rows(file, rows)
+                    num_of_post_request = 1
 
         logging.info("Extraction finished")
 
