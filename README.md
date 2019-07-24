@@ -27,8 +27,11 @@ Each extractor configuration can only exported `one` dataset to PowerBI. Writer 
 
 2. Dataset - Required
     - Name or ID of the dataset the user wish to name this configuration
-    - If same dataset name exist in the Workspace, the writer will ask user to specify the dataset ID instead and terminte the current run
-    - If specified dataset ID is not found, the writer will fail with an error message
+    ## WARNING
+        1. If the same dataset name exists in the same Workspace with a different schema, writer will drop the existing dataset in the Workspace and re-create a new one with the input dataset name
+        2. If the ID of the dataset is specified, users are required to ensure the input schema matches with the destinated table's schema in PowerBI
+        3. If input dataset name is found multiple times in the same Workspace, writer will ask users to specify the dataset ID instead and terminate the current run
+        4. If specified dataset ID is not found, the writer will fail with an error message
 
 3. Incremental load
     - *In Development*

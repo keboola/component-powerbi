@@ -124,8 +124,47 @@ class PowerBI():
             sys.exit(1)
 
         dataset = response.json()
-        self.data_id = dataset["id"]
-        logging.info("Dataset created: {}".format(self.dataset, self.data_id))
+        self.dataset_id = dataset["id"]
+        logging.info("Dataset created: {}".format(self.dataset, self.dataset_id))
+
+    def get_tables(self):
+        '''
+        Fetching available tables in the datasets
+        '''
+
+        url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}/tables".format(
+            self.workspace_url, self.dataset_id)
+        header = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {}".format(self.oauth_token)
+        }
+
+        response = self.get_request(url, header, {})
+        data = response.json()
+        all_tablenames = []
+        for i in data["value"]:
+            all_tablenames.append(i["name"])
+
+        return all_tablenames
+
+    def put_table(self, tablename, payload):
+        '''
+        Creating new table within the dataset
+        '''
+
+        url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}/tables/{2}".format(
+            self.workspace_url, self.dataset_id, tablename)
+        header = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {}".format(self.oauth_token)
+        }
+
+        response = requests.put(
+            url=url, headers=header, data=payload)
+
+        if response.status_code != 200:
+            logging.error("Table creation failed. Please contact support.")
+            sys.exit(1)
 
     def construct_relationship(self, config):
         '''
@@ -249,6 +288,22 @@ class PowerBI():
         logging.info("Dropping rows in table: {}".format(tablename))
         url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}/tables/{2}/rows".format(
             self.workspace_url, self.dataset_id, tablename)
+        header = {
+            "Authorization": "Bearer {}".format(self.oauth_token)
+        }
+        response = requests.delete(url, headers=header)
+        if response.status_code != 200:
+            logging.error(
+                "{} - {}".format(response.status_code, response.json()))
+
+    def delete_dataset(self):
+        '''
+        Removing rows from table
+        '''
+
+        logging.info("Dropping datasets: {}".format(self.dataset_id))
+        url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}".format(
+            self.workspace_url, self.dataset_id)
         header = {
             "Authorization": "Bearer {}".format(self.oauth_token)
         }
