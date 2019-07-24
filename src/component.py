@@ -9,6 +9,7 @@ import json
 from datetime import datetime  # noqa
 import time
 import pandas as pd
+import requests
 
 from kbc.env_handler import KBCEnvHandler
 from kbc.result import KBCTableDef  # noqa
@@ -61,8 +62,35 @@ class Component(KBCEnvHandler):
         Extracting OAuth Token out of Authorization
         """
 
-        data = json.loads(config["oauth_api"]["credentials"]["#data"])
-        token = data["access_token"]
+        data = config["oauth_api"]["credentials"]
+        data_encrypted = json.loads(
+            config["oauth_api"]["credentials"]["#data"])
+        client_id = data["appKey"]
+        client_secret = data["#appSecret"]
+        refresh_token = data_encrypted["refresh_token"]
+
+        url = "https://login.microsoftonline.com/common/oauth2/token"
+        header = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        payload = {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "grant_type": "refresh_token",
+            "resource": "https://analysis.windows.net/powerbi/api",
+            "refresh_token": refresh_token
+        }
+
+        response = requests.post(
+            url=url, headers=header, data=payload)
+
+        if response.status_code != 200:
+            logging.error(
+                "Unable to refresh access token. Please reset the account authorization.")
+            sys.exit(1)
+
+        data_r = response.json()
+        token = data_r["access_token"]
 
         return token
 
@@ -75,7 +103,7 @@ class Component(KBCEnvHandler):
         # input file
         table_list = []
         for table in tables:
-            name = table["full_path"] # noqa
+            name = table["full_path"]  # noqa
             if mapping == "input_mapping":
                 destination = table["destination"]
             elif mapping == "output_mapping":
@@ -122,8 +150,23 @@ class Component(KBCEnvHandler):
         # will find better ways to load incrementally
         # currently have issues to load the same table consecutively
         if _PowerBI.dataset_found:
+            all_tables = _PowerBI.get_tables()
+            drop_file_bool = True
             for file in _PowerBI.input_table_columns:
-                _PowerBI.delete_rows(file)
+                if file not in all_tables:
+                    drop_file_bool = False
+                    if dataset_type != "ID":
+                        _PowerBI.dataset_found = False
+                        _PowerBI.delete_dataset()
+                    else:
+                        logging.error(
+                            "Schema does not match. Please create a new dataset or modify the input tables to match "
+                            + "the input dataset_id's schema")
+                        sys.exit(1)
+
+            if drop_file_bool:
+                for file in _PowerBI.input_table_columns:
+                    _PowerBI.delete_rows(file)
 
         # Creating dataset is not found
         if not _PowerBI.dataset_found:
@@ -138,7 +181,7 @@ class Component(KBCEnvHandler):
         one_min_in_sec = 60
         num_of_post_request = 0
         for file in _PowerBI.input_table_columns:
-            logging.info("Loading dataset: {0}".format(file))
+            logging.info("Loading table: {0}".format(file))
 
             for chunk in pd.read_csv(DEFAULT_TABLE_SOURCE+file+'.csv', dtype=str, chunksize=10000):
                 rows = chunk.to_json(orient='records')
