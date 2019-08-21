@@ -189,8 +189,9 @@ class Component(KBCEnvHandler):
                     _PowerBI.post_rows(file, rows)
                     num_of_post_request += 1
                 else:
-                    wait_sec = one_min_in_sec - start_time
-                    time.sleep(wait_sec)
+                    wait_sec = one_min_in_sec - (int(time.time())-start_time)
+                    if wait_sec > 0:
+                        time.sleep(wait_sec)
                     start_time = time.time()
                     _PowerBI.post_rows(file, rows)
                     num_of_post_request = 1
