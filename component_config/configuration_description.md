@@ -1,5 +1,19 @@
 Each extractor configuration can only exported `one` dataset to PowerBI. Writer will be using the data_type defined in metadata in Keboola Storage. If data_type is not configured for the input table, writer will automatically assign that column as `string`.
 
+## PowerBI API Limitations
+
+To POST Rows
+
+1. 75 max columns
+2. 75 max tables
+3. 10,000 max rows per single POST rows request
+4. 1,000,000 rows added per hour per dataset
+5. 120 POST rows requests per minute per dataset
+6. If table has 250,000 or more rows, 120 POST rows requests per hour per dataset
+7. 200,000 max rows stored per table in FIFO dataset
+8. 5,000,000 max rows stored per table in 'none retention policy' dataset
+9. 4,000 characters per value for string column in POST rows operation
+
 ## Parameters
 
 1. Workspace

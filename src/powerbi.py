@@ -142,8 +142,11 @@ class PowerBI():
         response = self.get_request(url, header, {})
         data = response.json()
         all_tablenames = []
-        for i in data["value"]:
-            all_tablenames.append(i["name"])
+        try:
+            for i in data["value"]:
+                all_tablenames.append(i["name"])
+        except Exception:
+            pass
 
         return all_tablenames
 
