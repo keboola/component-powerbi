@@ -179,9 +179,9 @@ class PowerBI():
             relat_temp = {
                 "crossFilteringBehavior": "Automatic",
                 "name": "{0} - {1}".format(link["foreign_key_table"], link["primary_key_table"]),
-                "fromColumn": link["foreign_key_name"],
+                "fromColumn": link["foreign_key_column_name"],
                 "fromTable": link["foreign_key_table"],
-                "toColumn": link["primary_key_name"],
+                "toColumn": link["primary_key_column_name"],
                 "toTable": link["primary_key_table"]
             }
             relationship.append(relat_temp)
