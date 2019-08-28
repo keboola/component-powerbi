@@ -65,13 +65,15 @@ class PowerBI():
         response = self.get_request(url, header, {})
         if response.status_code != 200:
             if response.status_code == 400:
-                logging.error("{} - Malformed request. Please contact support.".format(response.status_code))
+                logging.error(
+                    "{} - Malformed request. Please contact support.".format(response.status_code))
             elif response.status_code == 401 or response.status_code == 403:
                 logging.error(
                     "{0} - Authorization failed. Please check account privileges.".format(response.status_code))
             elif response.status_code == 500:
                 logging.error(
-                    "{} - Internal error. Please try again".format(response.status_code)
+                    "{} - Internal error. Please try again".format(
+                        response.status_code)
                 )
             sys.exit(1)
 
@@ -127,7 +129,8 @@ class PowerBI():
 
         dataset = response.json()
         self.dataset_id = dataset["id"]
-        logging.info("Dataset created: {}".format(self.dataset, self.dataset_id))
+        logging.info("Dataset created: {}".format(
+            self.dataset, self.dataset_id))
 
     def get_tables(self):
         '''

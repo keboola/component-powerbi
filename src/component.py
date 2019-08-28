@@ -140,7 +140,8 @@ class Component(KBCEnvHandler):
         logging.info("IN tables mapped: "+str(in_table_names))
         # Handling input error
         if len(in_table_names) == 0:
-            logging.error("No tables are found in input mapping to export into PowerBI.")
+            logging.error(
+                "No tables are found in input mapping to export into PowerBI.")
             sys.exit(1)
 
         # Activate when oauth in KBC is ready
@@ -154,7 +155,8 @@ class Component(KBCEnvHandler):
         dataset_array = params["dataset"]
         # Handling input error
         if len(dataset_array) == 0:
-            logging.error("Dataset configuration is missing. Please specify dataset.")
+            logging.error(
+                "Dataset configuration is missing. Please specify dataset.")
             sys.exit(1)
 
         dataset_type = dataset_array[0]["dataset_type"]
@@ -176,7 +178,7 @@ class Component(KBCEnvHandler):
         # will find better ways to load incrementally
         # currently have issues to load the same table consecutively
         if _PowerBI.dataset_found:
-            all_tables = _PowerBI.get_tables()
+            all_tables = _PowerBI.get_tables() # noqa
             drop_file_bool = True
             """for file in _PowerBI.input_table_columns:
                 logging.info("FILE: {}".format(file))
