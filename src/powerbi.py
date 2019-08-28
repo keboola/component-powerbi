@@ -77,6 +77,7 @@ class PowerBI():
 
         response_json = response.json()
         datasets = response_json["value"]
+        logging.info("ALL DATASETS: {}".format(datasets))
 
         dataset_found = False
         dataset_id = ''
@@ -87,6 +88,7 @@ class PowerBI():
                         "Duplicated dataset name found. Please enter different dataset name or specify the dataset ID.")
                     sys.exit(1)
                 if dataset["name"] == self.dataset and not dataset_found:
+                    logging.info("Matching dataset found.")
                     dataset_id = dataset["id"]
                     dataset_found = True
             if self.dataset_type == 'ID':
@@ -141,6 +143,7 @@ class PowerBI():
 
         response = self.get_request(url, header, {})
         data = response.json()
+        logging.info("GET_TABLES: {}".format(data))
         all_tablenames = []
         try:
             for i in data["value"]:

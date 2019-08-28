@@ -4,7 +4,6 @@
   "required": [
       "dataset",
       "workspace",
-      "incremental",
       "table_relationship"
   ],
   "properties": {
@@ -36,16 +35,6 @@
               }
           },
           "maxItems": 1
-      },
-      "incremental": {
-          "type": "boolean",
-          "title": "Incremental load",
-          "propertyOrder": 400,
-          "enum": [
-              true,
-              false
-          ],
-          "default": true
       },
       "table_relationship": {
           "type": "array",

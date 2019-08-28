@@ -57,22 +57,13 @@ if 'KBC_LOGGER_ADDR' in os.environ and 'KBC_LOGGER_PORT' in os.environ:
     logger.removeHandler(logger.handlers[0])
 
 
-APP_VERSION = '0.0.4'
+APP_VERSION = '0.0.5'
 
 
 class Component(KBCEnvHandler):
 
     def __init__(self, debug=False):
         KBCEnvHandler.__init__(self, MANDATORY_PARS)
-        """
-        # override debug from config
-        if self.cfg_params.get('debug'):
-            debug = True
-        else:
-            debug = False
-
-        self.set_default_logger('DEBUG' if debug else 'INFO')
-        """
         logging.info('Running version %s', APP_VERSION)
         logging.info('Loading configuration...')
 
@@ -147,6 +138,10 @@ class Component(KBCEnvHandler):
         in_tables = self.configuration.get_input_tables()
         in_table_names = self.get_tables(in_tables, 'input_mapping')
         logging.info("IN tables mapped: "+str(in_table_names))
+        # Handling input error
+        if len(in_table_names) == 0:
+            logging.error("No tables are found in input mapping to export into PowerBI.")
+            sys.exit(1)
 
         # Activate when oauth in KBC is ready
         # Get Authorization Token
@@ -157,6 +152,11 @@ class Component(KBCEnvHandler):
         params = self.cfg_params  # noqa
         workspace = params["workspace"]
         dataset_array = params["dataset"]
+        # Handling input error
+        if len(dataset_array) == 0:
+            logging.error("Dataset configuration is missing. Please specify dataset.")
+            sys.exit(1)
+
         dataset_type = dataset_array[0]["dataset_type"]
         dataset = dataset_array[0]["dataset_input"]
         table_relationship = params["table_relationship"]
@@ -178,17 +178,19 @@ class Component(KBCEnvHandler):
         if _PowerBI.dataset_found:
             all_tables = _PowerBI.get_tables()
             drop_file_bool = True
-            for file in _PowerBI.input_table_columns:
+            """for file in _PowerBI.input_table_columns:
+                logging.info("FILE: {}".format(file))
                 if file not in all_tables:
                     drop_file_bool = False
                     if dataset_type != "ID":
+                        logging.info("DELETE DATASET")
                         _PowerBI.dataset_found = False
                         _PowerBI.delete_dataset()
                     else:
                         logging.error(
                             "Schema does not match. Please create a new dataset or modify the input tables to match "
                             + "the input dataset_id's schema")
-                        sys.exit(1)
+                        sys.exit(1)"""
 
             if drop_file_bool:
                 for file in _PowerBI.input_table_columns:
