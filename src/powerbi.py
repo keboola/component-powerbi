@@ -79,7 +79,7 @@ class PowerBI():
 
         response_json = response.json()
         datasets = response_json["value"]
-        logging.info("ALL DATASETS: {}".format(datasets))
+        # logging.info("ALL DATASETS: {}".format(datasets))
 
         dataset_found = False
         dataset_id = ''
@@ -146,7 +146,7 @@ class PowerBI():
 
         response = self.get_request(url, header, {})
         data = response.json()
-        logging.info("GET_TABLES: {}".format(data))
+        # logging.info("GET_TABLES: {}".format(data))
         all_tablenames = []
         try:
             for i in data["value"]:
