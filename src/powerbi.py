@@ -284,9 +284,10 @@ class PowerBI():
 
         response = self.post_request(url, header, payload)
         if response.status_code != 200:
+            error_message = response.json()
             logging.error(
                 "{0} - Posting rows issues occured. Please contact support - {1}".format(
-                    response.status_code, response.json()))
+                    response.status_code, error_message["error"]["message"]))
             sys.exit(1)
 
     def delete_rows(self, tablename):
@@ -302,8 +303,10 @@ class PowerBI():
         }
         response = requests.delete(url, headers=header)
         if response.status_code != 200:
+            error_message = response.json()
             logging.error(
-                "{} - {}".format(response.status_code, response.json()))
+                "{} - {}".format(response.status_code, error_message["error"]["message"]))
+            sys.exit(1)
 
     def delete_dataset(self):
         '''
