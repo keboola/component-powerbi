@@ -67,8 +67,3 @@ To POST Rows
         Primary Key Table|Primary Key Column Name|Foreign Key Table|Foreign Key Column Name
         -|-|-|-
         `Order`|order_id|`Order-Item`|order_id
-
-For more details, please visit [here](https://bitbucket.org/kds_consulting_team/kds-team.wr-powerbi/src/master/README.md).
-
-
-        
