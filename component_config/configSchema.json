@@ -10,7 +10,7 @@
       "workspace": {
           "type": "string",
           "title": "Workspace",
-          "descriptions": "Please leave this blank if user is trying to export into the logged in accoung's workspace",
+          "description": "Please leave this blank if user is trying to export into the signed-in account's workspace",
           "propertyOrder": 200
       },
       "dataset": {

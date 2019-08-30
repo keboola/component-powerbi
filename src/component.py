@@ -57,7 +57,7 @@ if 'KBC_LOGGER_ADDR' in os.environ and 'KBC_LOGGER_PORT' in os.environ:
     logger.removeHandler(logger.handlers[0])
 
 
-APP_VERSION = '0.0.5'
+APP_VERSION = '0.0.6'
 
 
 class Component(KBCEnvHandler):
@@ -151,6 +151,10 @@ class Component(KBCEnvHandler):
 
         # Configuration parameters
         params = self.cfg_params  # noqa
+        # Error handler, if there is nothing in the configuration
+        if params == {}:
+            logging.error("There are no inputs in the configurations. Please configure.")
+            sys.exit(1)
         workspace = params["workspace"]
         dataset_array = params["dataset"]
         # Handling input error
