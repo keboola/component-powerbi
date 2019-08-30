@@ -2,6 +2,8 @@ Each extractor configuration can only exported `one` dataset to PowerBI. Writer 
 
 ## PowerBI API Limitations
 
+Datasets created via PowerBI Desktop `CANNOT` be used as a push dataset in PowerBI REST API (this component). To be able to update/add rows into the dataset, the dataset has to be created via PowerBI REST API (or via this component).
+
 To POST Rows
 
 1. 75 max columns
