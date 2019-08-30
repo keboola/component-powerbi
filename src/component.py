@@ -153,7 +153,8 @@ class Component(KBCEnvHandler):
         params = self.cfg_params  # noqa
         # Error handler, if there is nothing in the configuration
         if params == {}:
-            logging.error("There are no inputs in the configurations. Please configure.")
+            logging.error(
+                "There are no inputs in the configurations. Please configure.")
             sys.exit(1)
         workspace = params["workspace"]
         dataset_array = params["dataset"]
@@ -182,7 +183,7 @@ class Component(KBCEnvHandler):
         # will find better ways to load incrementally
         # currently have issues to load the same table consecutively
         if _PowerBI.dataset_found:
-            all_tables = _PowerBI.get_tables() # noqa
+            all_tables = _PowerBI.get_tables()  # noqa
             drop_file_bool = True
             """for file in _PowerBI.input_table_columns:
                 logging.info("FILE: {}".format(file))
