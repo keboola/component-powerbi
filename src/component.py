@@ -198,9 +198,15 @@ class Component(KBCEnvHandler):
                             "Schema does not match. Please create a new dataset or modify the input tables to match "
                             + "the input dataset_id's schema")
                         sys.exit(1)"""
+            drop_list = []
+            for file in _PowerBI.input_table_columns:
+                if file in all_tables:
+                    drop_list.append(file)
 
-            if drop_file_bool:
-                for file in _PowerBI.input_table_columns:
+            # if drop_file_bool:
+            if len(drop_file_bool) > 0:
+                # for file in _PowerBI.input_table_columns:
+                for file in _PowerBI.drop_list:
                     _PowerBI.delete_rows(file)
 
         # Creating dataset is not found
