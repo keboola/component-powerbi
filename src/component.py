@@ -184,7 +184,7 @@ class Component(KBCEnvHandler):
         # currently have issues to load the same table consecutively
         if _PowerBI.dataset_found:
             all_tables = _PowerBI.get_tables()  # noqa
-            drop_file_bool = True
+            drop_file_bool = True  # noqa
             """for file in _PowerBI.input_table_columns:
                 logging.info("FILE: {}".format(file))
                 if file not in all_tables:
@@ -204,7 +204,7 @@ class Component(KBCEnvHandler):
                     drop_list.append(file)
 
             # if drop_file_bool:
-            if len(drop_file_bool) > 0:
+            if len(drop_list) > 0:
                 # for file in _PowerBI.input_table_columns:
                 for file in _PowerBI.drop_list:
                     _PowerBI.delete_rows(file)
