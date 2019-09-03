@@ -206,7 +206,7 @@ class Component(KBCEnvHandler):
             # if drop_file_bool:
             if len(drop_list) > 0:
                 # for file in _PowerBI.input_table_columns:
-                for file in _PowerBI.drop_list:
+                for file in drop_list:
                     _PowerBI.delete_rows(file)
 
         # Creating dataset is not found
