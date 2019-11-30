@@ -31,7 +31,7 @@ To POST Rows
         4. If specified dataset ID is not found, the writer will fail with an error message
 
 3. Incremental load
-    - *In Development*
+    - AWARE! This does not mean that the table will load into the PowerBI incrementally even with the established table relationship. With increment load enabled, it will simply not drop the tables in the relative destination and append what is configured from Keboola to PowerBI.
 
 4. Table Relationships
     - User are required to configure this Relationship table if user is hoping to link tables via primary keys and foreign keys. Writer will fail if relationship is not configured properly.

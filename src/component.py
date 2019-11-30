@@ -26,12 +26,14 @@ KEY_DATASET = 'dataset'
 KEY_WORKSPACE = 'workspace'
 KEY_INCREMENTAL = 'incremental'
 KEY_TABLE_RELATIONSHIP = 'table_relationship'
+KEY_INCREMENTAL = 'incremental_load'
 
 MANDATORY_PARS = [
     KEY_DATASET,
     KEY_WORKSPACE,
     KEY_INCREMENTAL,
-    KEY_TABLE_RELATIONSHIP
+    KEY_TABLE_RELATIONSHIP,
+    KEY_INCREMENTAL
 ]
 MANDATORY_IMAGE_PARS = []
 
@@ -57,7 +59,7 @@ if 'KBC_LOGGER_ADDR' in os.environ and 'KBC_LOGGER_PORT' in os.environ:
     logger.removeHandler(logger.handlers[0])
 
 
-APP_VERSION = '0.0.6'
+APP_VERSION = '0.0.7'
 
 
 class Component(KBCEnvHandler):
@@ -164,6 +166,12 @@ class Component(KBCEnvHandler):
                 "Dataset configuration is missing. Please specify dataset.")
             sys.exit(1)
 
+        # Incremental load
+        if 'incremental_load' in params:
+            incremental = bool(params['incremental_load'])
+        else:
+            incremental = False
+
         dataset_type = dataset_array[0]["dataset_type"]
         dataset = dataset_array[0]["dataset_input"]
         table_relationship = params["table_relationship"]
@@ -204,7 +212,7 @@ class Component(KBCEnvHandler):
                     drop_list.append(file)
 
             # if drop_file_bool:
-            if len(drop_list) > 0:
+            if len(drop_list) > 0 and not incremental:
                 # for file in _PowerBI.input_table_columns:
                 for file in drop_list:
                     _PowerBI.delete_rows(file)

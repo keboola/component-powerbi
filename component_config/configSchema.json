@@ -1,73 +1,81 @@
 {
-  "type": "object",
-  "title": "PowerBI Configuration",
-  "required": [
-      "dataset",
-      "workspace",
-      "table_relationship"
-  ],
-  "properties": {
-      "workspace": {
-          "type": "string",
-          "title": "Workspace",
-          "description": "Please leave this blank if user is trying to export into the signed-in account's workspace",
-          "propertyOrder": 200
-      },
-      "dataset": {
-          "type": "array",
-          "title": "Dataset",
-          "propertyOrder": 300,
-          "format": "table",
-          "items": {
-              "properties": {
-                  "dataset_type": {
-                      "type": "string",
-                      "title": "Type",
-                      "enum": [
-                          "Name",
-                          "ID"
-                      ]
-                  },
-                  "dataset_input": {
-                      "title": "Value",
-                      "type": "string"
-                  }
-              }
-          },
-          "maxItems": 1
-      },
-      "table_relationship": {
-          "type": "array",
-          "format": "table",
-          "title": "Table Relationships",
-          "description": "Setting up table's relationships",
-          "propertyOrder": 450,
-          "items": {
-              "type": "object",
-              "title": "Relationship",
-              "properties": {
-                  "primary_key_table": {
-                      "type": "string",
-                      "title": "Primary Key Table",
-                      "propertyOrder": 100
-                  },
-                  "primary_key_column_name": {
-                      "type": "string",
-                      "title": "Primary Key Column Name",
-                      "propertyOrder": 200
-                  },
-                  "foreign_key_table": {
-                      "type": "string",
-                      "title": "Foreign Key Table",
-                      "propertyOrder": 300
-                  },
-                  "foreign_key_column_name": {
-                      "type": "string",
-                      "title": "Foreign Key Column Name",
-                      "propertyOrder": 400
-                  }
-              }
-          }
-      }
-  }
+    "type": "object",
+    "title": "PowerBI Configuration",
+    "required": [
+        "dataset",
+        "workspace",
+        "table_relationship",
+        "incremental_load"
+    ],
+    "properties": {
+        "workspace": {
+            "type": "string",
+            "title": "Workspace",
+            "description": "Please leave this blank if user is trying to export into the signed-in account's workspace",
+            "propertyOrder": 200
+        },
+        "dataset": {
+            "type": "array",
+            "title": "Dataset",
+            "propertyOrder": 300,
+            "format": "table",
+            "items": {
+                "properties": {
+                    "dataset_type": {
+                        "type": "string",
+                        "title": "Type",
+                        "enum": [
+                            "Name",
+                            "ID"
+                        ]
+                    },
+                    "dataset_input": {
+                        "title": "Value",
+                        "type": "string"
+                    }
+                }
+            },
+            "maxItems": 1
+        },
+        "incremental_load": {
+            "type": "boolean",
+            "title": "Incremental Load",
+            "PropertyOrder": 350,
+            "default": false,
+            "description": "AWARE! This does not mean that the table will load into the PowerBI incrementally even with the established table relationship. With increment load enabled, it will simply not drop the tables in the relative destination and append what is configured from Keboola to PowerBI."
+        },
+        "table_relationship": {
+            "type": "array",
+            "format": "table",
+            "title": "Table Relationships",
+            "description": "Setting up table's relationships",
+            "propertyOrder": 450,
+            "items": {
+                "type": "object",
+                "title": "Relationship",
+                "properties": {
+                    "primary_key_table": {
+                        "type": "string",
+                        "title": "Primary Key Table",
+                        "propertyOrder": 100
+                    },
+                    "primary_key_column_name": {
+                        "type": "string",
+                        "title": "Primary Key Column Name",
+                        "propertyOrder": 200
+                    },
+                    "foreign_key_table": {
+                        "type": "string",
+                        "title": "Foreign Key Table",
+                        "propertyOrder": 300
+                    },
+                    "foreign_key_column_name": {
+                        "type": "string",
+                        "title": "Foreign Key Column Name",
+                        "propertyOrder": 400
+                    }
+                }
+            }
+        }
+    }
 }
