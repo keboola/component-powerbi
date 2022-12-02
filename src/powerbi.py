@@ -133,8 +133,7 @@ class PowerBI:
 
         dataset = response.json()
         self.dataset_id = dataset["id"]
-        logging.info("Dataset created: {}".format(
-            self.dataset, self.dataset_id))
+        logging.info(f"Dataset created: {self.dataset_id}")
 
     def get_tables(self):
         '''
