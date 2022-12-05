@@ -3,13 +3,15 @@ import sys
 import json
 import csv
 import requests
+import backoff
+from requests.exceptions import ReadTimeout
 
 
 # Default Table Output Destination
 DEFAULT_TABLE_SOURCE = "/data/in/tables/"
 
 
-class PowerBI():
+class PowerBI:
 
     def __init__(self, oauth_token, workspace, dataset_type, dataset, input_tables, table_relationship):
 
@@ -32,6 +34,7 @@ class PowerBI():
         self.dataset_id = ''
         self.dataset_found = self.search_datasetid()
 
+    @backoff.on_exception(backoff.expo, ReadTimeout, max_tries=5)
     def get_request(self, url, header, params):
         '''
         Basic GET request
@@ -41,6 +44,7 @@ class PowerBI():
 
         return response
 
+    @backoff.on_exception(backoff.expo, ReadTimeout, max_tries=5)
     def post_request(self, url, header, payload):
         '''
         Basic POST request
@@ -129,8 +133,7 @@ class PowerBI():
 
         dataset = response.json()
         self.dataset_id = dataset["id"]
-        logging.info("Dataset created: {}".format(
-            self.dataset, self.dataset_id))
+        logging.info(f"Dataset created: {self.dataset_id}")
 
     def get_tables(self):
         '''
