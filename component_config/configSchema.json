@@ -10,7 +10,7 @@
     "properties": {
         "workspace": {
             "type": "string",
-            "title": "Workspace",
+            "title": "Workspace ID",
             "description": "Please leave this blank if user is trying to export into the signed-in account's workspace",
             "propertyOrder": 200
         },
