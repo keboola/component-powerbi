@@ -7,6 +7,8 @@ PowerBI writer's purpose is strive to aid users defining designated table relati
 
 Datasets created via PowerBI Desktop `CANNOT` be used as a push dataset in PowerBI REST API (this component). To be able to update/add rows into the dataset, the dataset has to be created via PowerBI REST API (or via this component).
 
+As stated in the [Power BI developer documentation](https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations), Push datasets are very limited in their functionality. They're designed only for a near real-time streaming scenario to be consumed by a streaming tile in a dashboard, and not by a Power BI report.
+
 To POST Rows
 
 1. 75 max columns
