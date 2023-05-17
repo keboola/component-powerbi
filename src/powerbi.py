@@ -291,7 +291,8 @@ class PowerBI:
             sys.exit(1)
 
         if not response:
-            logging.error("Failed to get response from Power BI API when posting dataset rows.")
+            logging.error("Failed to get response from Power BI API when posting dataset rows - "
+                          "Please check API limits.")
             sys.exit(1)
 
         if response.status_code == 200:
