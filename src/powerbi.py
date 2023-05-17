@@ -288,9 +288,15 @@ class PowerBI:
         response = self.post_request(url, header, payload)
         if response.status_code != 200:
             error_message = response.json()
-            logging.error(
-                "{0} - Posting rows issues occured. Please contact support - {1}".format(
-                    response.status_code, error_message["error"]["message"]))
+            if error_message.get("error", None):
+                logging.error(
+                    "{0} - Posting rows issues occured. Please contact support - {1}".format(
+                        response.status_code, error_message["error"]["message"]))
+            else:
+                # This happens when table size limit is hit
+                logging.error(
+                    "{0} - Posting rows issues occured. Please check the limitations of push datasets API - {1}".format(
+                        response.status_code, error_message))
             sys.exit(1)
 
     def delete_rows(self, tablename):
