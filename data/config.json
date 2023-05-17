@@ -1,53 +1,52 @@
 {
-  "storage": {
-    "input": {
-      "files": [],
-      "tables": [
-        {
-          "source": "in.c-test.test",
-          "destination": "test.csv",
-          "limit": 50,
-          "columns": [],
-          "where_values": [],
-          "where_operator": "eq"
+    "storage": {
+        "input": {
+            "tables": [
+                {
+                    "source": "in.c-power_bi_test.toobig_insights",
+                    "destination": "big_test.csv",
+                    "where_column": "",
+                    "where_values": [],
+                    "where_operator": "eq",
+                    "columns": [],
+                    "column_types": [],
+                    "overwrite": false,
+                    "use_view": false
+                }
+            ],
+            "files": []
         }
-      ]
     },
-    "output": {
-      "files": [],
-      "tables": []
-    }
-  },
-  "parameters": {
-    "#api_token": "demo",
-    "period_from": "yesterday",
-    "endpoints": [
-      "deals",
-      "companies"
-    ],
-    "company_properties": "",
-    "deal_properties": "",
-    "debug": true
-  },
-  "image_parameters": {
-    "syrup_url": "https://syrup.keboola.com/"
-  },
-  "authorization": {
-    "oauth_api": {
-      "id": "OAUTH_API_ID",
-      "credentials": {
-        "id": "main",
-        "authorizedFor": "Myself",
-        "creator": {
-          "id": "1234",
-          "description": "me@keboola.com"
-        },
-        "created": "2016-01-31 00:13:30",
-        "#data": "{\"refresh_token\":\"MCWBkfdK9m5YK*Oqahwm6XN6elMAEwcH5kYcK8Ku!bpiOgSDZN9MQIzunpMsh6LyKH0i!7OcwwwajuxPfvm2PrrWYSs*HerDr2ZSJ39pqHJcvwUNIvHdtcgFFr3Em*yhn3GKBwM2p9UrjtgdAriSDny5YgUYGuI3gYJY1ypD*wBaAOzzeeXZx6CdgjruJ7gboTAngbWk3CzO9rORIwXAAlGUH6ZgBQJL3AwkYVMRFV4BvIvDAMF*0DcGDyrcyYDw9X3vYn*Wy!OqgrenKCGowdJk0C0136SUv4PJI383y76UMim6Q7KGDj7Lf!K2N2FDbxsz2iZKZTBr2vHx8pEC1oBc$\"}",
-        "oauthVersion": "2.0",
-        "appKey": "000000004C184A49",
-        "#appSecret": "vBAYak49pVK1zghHAgDH4tCSCNlT-CiN"
-      }
-    }
-  }
+    "parameters": {
+        "dataset": [
+            {
+                "dataset_type": "Name",
+                "dataset_input": "big_test"
+            }
+        ],
+        "workspace": "27582307-ab04-4269-a6e7-4d1c803ba6ba",
+        "incremental_load": false,
+        "table_relationship": []
+    },
+    "authorization": {
+        "oauth_api": {
+            "credentials": {
+                "id": "977563939",
+                "authorizedFor": "dominik.novotny@keboola.com",
+                "creator": {
+                    "description": "dominik.novotny@keboola.com",
+                    "id": "512484"
+                },
+                "created": "2023-05-17T10:46:46.188Z",
+                "#data": [hidden],
+                "oauthVersion": "2.0",
+                "appKey": "91a91bd3-556d-4ddd-8e07-31d1633b8611",
+                "#appSecret": "[hidden]"
+            },
+            "version": 2
+        }
+    },
+    "shared_code_row_ids": [],
+    "image_parameters": {},
+    "action": "run"
 }

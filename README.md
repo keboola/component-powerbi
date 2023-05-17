@@ -23,7 +23,7 @@ To POST Rows
 
 ## Configurations
 
-Each extractor configuration can only exported `one` dataset to PowerBI. Writer will be using the data_type defined in metadata in Keboola Storage. If data_type is not configured for the input table, writer will automatically assign that column as `string`.
+Each extractor configuration can only export `one` dataset to PowerBI. Writer will be using the data_type defined in metadata in Keboola Storage. If data_type is not configured for the input table, writer will automatically assign that column as `string`.
 
 1. Workspace
     - The workspace ID where the user wants to output their dataset.
