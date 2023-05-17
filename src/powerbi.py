@@ -1,14 +1,16 @@
 import logging
 import sys
+import os
+from pathlib import Path
 import json
 import csv
 import requests
 import backoff
-from requests.exceptions import ReadTimeout
+from requests.exceptions import ReadTimeout, ConnectionError
 
 
 # Default Table Output Destination
-DEFAULT_TABLE_SOURCE = "/data/in/tables/"
+DEFAULT_TABLE_SOURCE = os.path.join(Path(os.getcwd()).parent, "data/in/tables/")
 
 
 class PowerBI:
@@ -44,7 +46,7 @@ class PowerBI:
 
         return response
 
-    @backoff.on_exception(backoff.expo, ReadTimeout, max_tries=5)
+    @backoff.on_exception(backoff.expo, (ReadTimeout, ConnectionError), max_tries=5)
     def post_request(self, url, header, payload):
         '''
         Basic POST request
@@ -203,6 +205,7 @@ class PowerBI:
         '''
 
         table_columns = {}
+
         for table in self.input_tables:
             with open(DEFAULT_TABLE_SOURCE+table+'.manifest') as json_file:
                 manifest = json.load(json_file)
@@ -276,28 +279,37 @@ class PowerBI:
         Posting rows
         '''
 
-        url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}/tables/{2}/rows".format(
-            self.workspace_url, self.dataset_id, tablename)
-        header = {
-            "Authorization": "Bearer {}".format(self.oauth_token)
-        }
-        payload = {
-            "rows": json.loads(rows)
-        }
+        url = f"https://api.powerbi.com/v1.0/myorg/{self.workspace_url}datasets/{self.dataset_id}/tables/{tablename}/rows"
+        header = {"Authorization": f"Bearer {self.oauth_token}"}
+        payload = {"rows": json.loads(rows)}
 
-        response = self.post_request(url, header, payload)
-        if response.status_code != 200:
-            error_message = response.json()
-            if error_message.get("error", None):
-                logging.error(
-                    "{0} - Posting rows issues occured. Please contact support - {1}".format(
-                        response.status_code, error_message["error"]["message"]))
-            else:
-                # This happens when table size limit is hit
-                logging.error(
-                    "{0} - Posting rows issues occured. Please check the limitations of push datasets API - {1}".format(
-                        response.status_code, error_message))
+        try:
+            response = self.post_request(url, header, payload)
+        except ConnectionError:
+            logging.error("Connection error while posting rows, backoff strategy applied.")
             sys.exit(1)
+
+        if not response:
+            logging.error("Failed to get response from Power BI API when posting dataset rows.")
+            sys.exit(1)
+
+        if response.status_code == 200:
+            return
+
+        if response.status_code == 429:
+            logging.error("Posting rows issues occured. Please check the limitations of push datasets API")
+            sys.exit(1)
+
+        error_message = response.json()
+        error_text = error_message.get("error", {}).get("message", "")
+        if error_text:
+            logging.error(
+                f"{response.status_code} - Posting rows error has occured. Please contact support - {error_text}")
+        else:
+            logging.error(
+                f"{response.status_code} - Unknown error happened during Posting rows. Please contact support - {error_message}")
+
+        sys.exit(1)
 
     def delete_rows(self, tablename):
         '''
