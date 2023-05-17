@@ -279,7 +279,8 @@ class PowerBI:
         Posting rows
         '''
 
-        url = f"https://api.powerbi.com/v1.0/myorg/{self.workspace_url}datasets/{self.dataset_id}/tables/{tablename}/rows"
+        url = f"https://api.powerbi.com/v1.0/myorg/{self.workspace_url}datasets/" \
+              f"{self.dataset_id}/tables/{tablename}/rows"
         header = {"Authorization": f"Bearer {self.oauth_token}"}
         payload = {"rows": json.loads(rows)}
 
@@ -307,7 +308,8 @@ class PowerBI:
                 f"{response.status_code} - Posting rows error has occured. Please contact support - {error_text}")
         else:
             logging.error(
-                f"{response.status_code} - Unknown error happened during Posting rows. Please contact support - {error_message}")
+                f"{response.status_code} - Unknown error happened during Posting rows. Please contact support "
+                f"- {error_message}")
 
         sys.exit(1)
 
