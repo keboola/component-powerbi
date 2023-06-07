@@ -260,6 +260,9 @@ class Component(KBCEnvHandler):
             if row_count > MAX_ROW_COUNT:
                 logging.error(f"CSV file exceeds maximum row count. Found {row_count} rows, "
                               f"expected {MAX_ROW_COUNT} or less.")
+                logging.error("Push datasets are very limited in their functionality. "
+                              "They're designed only for a near real-time streaming scenario to be consumed by a "
+                              "streaming tile in a dashboard, and not by a Power BI report.")
                 sys.exit(1)
 
 
