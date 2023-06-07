@@ -262,8 +262,6 @@ class Component(KBCEnvHandler):
                               f"expected {MAX_ROW_COUNT} or less.")
                 sys.exit(1)
 
-
-
 """
         Main entrypoint
 """
