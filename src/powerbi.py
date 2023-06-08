@@ -17,6 +17,7 @@ info_msg = "Push datasets are very limited in their functionality. " \
            "streaming tile in a dashboard, and not by a Power BI report. Please consider using direct connection to " \
            "your database using Power BI Gateway."
 
+
 class PowerBI:
 
     def __init__(self, oauth_token, workspace, dataset_type, dataset, input_tables, table_relationship):
