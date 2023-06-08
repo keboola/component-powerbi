@@ -14,7 +14,8 @@ DEFAULT_TABLE_SOURCE = os.path.join(Path(os.getcwd()).parent, "data/in/tables/")
 
 info_msg = "Push datasets are very limited in their functionality. " \
            "They're designed only for a near real-time streaming scenario to be consumed by a " \
-           "streaming tile in a dashboard, and not by a Power BI report."
+           "streaming tile in a dashboard, and not by a Power BI report. Please consider using direct connection to " \
+           "your database using Power BI Gateway."
 
 class PowerBI:
 
