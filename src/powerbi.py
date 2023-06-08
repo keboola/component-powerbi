@@ -12,6 +12,9 @@ from requests.exceptions import ReadTimeout, ConnectionError
 # Default Table Output Destination
 DEFAULT_TABLE_SOURCE = os.path.join(Path(os.getcwd()).parent, "data/in/tables/")
 
+info_msg = "Push datasets are very limited in their functionality. " \
+           "They're designed only for a near real-time streaming scenario to be consumed by a " \
+           "streaming tile in a dashboard, and not by a Power BI report."
 
 class PowerBI:
 
@@ -290,17 +293,22 @@ class PowerBI:
             logging.error("Connection error while posting rows, backoff strategy applied.")
             sys.exit(1)
 
-        if not response:
+        if not response.ok:
+            logging.error(response.text)
             logging.error("Failed to get response from Power BI API when posting dataset rows - "
-                          "Please check API limits.")
+                          "Please check API limits at: "
+                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            logging.error(info_msg)
             sys.exit(1)
 
         if response.status_code == 200:
             return
 
         if response.status_code == 429:
+            logging.error(response.text)
             logging.error("Posting rows issues occured. Please check the limitations of push datasets API at: "
                           "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            logging.error(info_msg)
             sys.exit(1)
 
         error_message = response.json()
@@ -328,9 +336,10 @@ class PowerBI:
         }
         response = requests.delete(url, headers=header)
         if response.status_code != 200:
-            error_message = response.json()
-            logging.error(
-                "{} - {}".format(response.status_code, error_message["error"]["message"]))
+            logging.error(f"Cannot drop rows in table: {tablename}, reason: {response.text} Please check the "
+                          f"limitations of push datasets API at: "
+                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            logging.error(info_msg)
             sys.exit(1)
 
     def delete_dataset(self):

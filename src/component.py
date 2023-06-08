@@ -60,7 +60,7 @@ if 'KBC_LOGGER_ADDR' in os.environ and 'KBC_LOGGER_PORT' in os.environ:
 
 
 APP_VERSION = '0.0.7'
-MAX_ROW_COUNT = 1_000_000
+MAX_ROW_COUNT = 3_000_000
 
 
 class Component(KBCEnvHandler):
