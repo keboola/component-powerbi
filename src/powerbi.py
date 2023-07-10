@@ -297,10 +297,10 @@ class PowerBI:
 
         if not response.ok:
             logging.error(response.text)
-            logging.error("Failed to get response from Power BI API when posting dataset rows - "
+            logging.error(info_msg)
+            logging.error("Failed to get response from Power BI API while sending rows to Power BI - "
                           "Please check API limits at: "
                           "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
-            logging.error(info_msg)
             sys.exit(1)
 
         if response.status_code == 200:
@@ -308,16 +308,18 @@ class PowerBI:
 
         if response.status_code == 429:
             logging.error(response.text)
-            logging.error("Posting rows issues occured. Please check the limitations of push datasets API at: "
-                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
             logging.error(info_msg)
+            logging.error("An error occurred while sending rows to Power BI. Please check the limitations of the "
+                          "Push Datasets API at:"
+                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
             sys.exit(1)
 
         error_message = response.json()
         error_text = error_message.get("error", {}).get("message", "")
         if error_text:
             logging.error(
-                f"{response.status_code} - Posting rows error has occured. Please contact support - {error_text}")
+                f"{response.status_code} - Error occured during sending rows to Power BI. "
+                f"Please contact support - {error_text}")
         else:
             logging.error(
                 f"{response.status_code} - Unknown error happened during Posting rows. Please contact support "
