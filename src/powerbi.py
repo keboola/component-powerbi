@@ -297,11 +297,11 @@ class PowerBI:
 
         if not response.ok:
             error_messages = [
-                response.text,
-                info_msg,
                 "Failed to get response from Power BI API while sending rows to Power BI - "
                 "Please check API limits at: "
-                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations"
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations",
+                info_msg,
+                response.text
             ]
 
             error_message = '\n\n'.join(error_messages)
@@ -313,11 +313,11 @@ class PowerBI:
 
         if response.status_code == 429:
             error_messages = [
-                response.text,
-                info_msg,
                 "An error occurred while sending rows to Power BI. Please check the limitations of the "
                 "Push Datasets API at:"
-                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations"
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations",
+                info_msg,
+                response.text
             ]
 
             error_message = '\n\n'.join(error_messages)
