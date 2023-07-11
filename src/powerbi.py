@@ -1,14 +1,21 @@
 import logging
 import sys
+import os
+from pathlib import Path
 import json
 import csv
 import requests
 import backoff
-from requests.exceptions import ReadTimeout
+from requests.exceptions import ReadTimeout, ConnectionError
 
 
 # Default Table Output Destination
-DEFAULT_TABLE_SOURCE = "/data/in/tables/"
+DEFAULT_TABLE_SOURCE = os.path.join(Path(os.getcwd()).parent, "data/in/tables/")
+
+info_msg = "Push datasets are very limited in their functionality. " \
+           "They're designed only for a near real-time streaming scenario to be consumed by a " \
+           "streaming tile in a dashboard, and not by a Power BI report. Please consider using direct connection to " \
+           "your database using Power BI Gateway."
 
 
 class PowerBI:
@@ -44,7 +51,7 @@ class PowerBI:
 
         return response
 
-    @backoff.on_exception(backoff.expo, ReadTimeout, max_tries=5)
+    @backoff.on_exception(backoff.expo, (ReadTimeout, ConnectionError), max_tries=5)
     def post_request(self, url, header, payload):
         '''
         Basic POST request
@@ -203,6 +210,7 @@ class PowerBI:
         '''
 
         table_columns = {}
+
         for table in self.input_tables:
             with open(DEFAULT_TABLE_SOURCE+table+'.manifest') as json_file:
                 manifest = json.load(json_file)
@@ -276,22 +284,58 @@ class PowerBI:
         Posting rows
         '''
 
-        url = "https://api.powerbi.com/v1.0/myorg/{0}datasets/{1}/tables/{2}/rows".format(
-            self.workspace_url, self.dataset_id, tablename)
-        header = {
-            "Authorization": "Bearer {}".format(self.oauth_token)
-        }
-        payload = {
-            "rows": json.loads(rows)
-        }
+        url = f"https://api.powerbi.com/v1.0/myorg/{self.workspace_url}datasets/" \
+              f"{self.dataset_id}/tables/{tablename}/rows"
+        header = {"Authorization": f"Bearer {self.oauth_token}"}
+        payload = {"rows": json.loads(rows)}
 
-        response = self.post_request(url, header, payload)
-        if response.status_code != 200:
-            error_message = response.json()
-            logging.error(
-                "{0} - Posting rows issues occured. Please contact support - {1}".format(
-                    response.status_code, error_message["error"]["message"]))
+        try:
+            response = self.post_request(url, header, payload)
+        except ConnectionError:
+            logging.error("Connection error while posting rows, backoff strategy applied.")
             sys.exit(1)
+
+        if not response.ok:
+            error_messages = [
+                "Failed to get response from Power BI API while sending rows to Power BI - "
+                "Please check API limits at: "
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations",
+                info_msg,
+                response.text
+            ]
+
+            error_message = '\n\n'.join(error_messages)
+            logging.error(error_message)
+            sys.exit(1)
+
+        if response.status_code == 200:
+            return
+
+        if response.status_code == 429:
+            error_messages = [
+                "An error occurred while sending rows to Power BI. Please check the limitations of the "
+                "Push Datasets API at:"
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations",
+                info_msg,
+                response.text
+            ]
+
+            error_message = '\n\n'.join(error_messages)
+            logging.error(error_message)
+            sys.exit(1)
+
+        error_message = response.json()
+        error_text = error_message.get("error", {}).get("message", "")
+        if error_text:
+            logging.error(
+                f"{response.status_code} - Error occured during sending rows to Power BI. "
+                f"Please contact support - {error_text}")
+        else:
+            logging.error(
+                f"{response.status_code} - Unknown error happened during Posting rows. Please contact support "
+                f"- {error_message}")
+
+        sys.exit(1)
 
     def delete_rows(self, tablename):
         '''
@@ -306,9 +350,10 @@ class PowerBI:
         }
         response = requests.delete(url, headers=header)
         if response.status_code != 200:
-            error_message = response.json()
-            logging.error(
-                "{} - {}".format(response.status_code, error_message["error"]["message"]))
+            logging.error(f"Cannot drop rows in table: {tablename}, reason: {response.text} Please check the "
+                          f"limitations of push datasets API at: "
+                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            logging.error(info_msg)
             sys.exit(1)
 
     def delete_dataset(self):

@@ -3,6 +3,7 @@ Template Component main class.
 
 '''
 
+import csv
 import logging
 import logging_gelf.handlers
 import logging_gelf.formatters
@@ -32,8 +33,7 @@ MANDATORY_PARS = [
     KEY_DATASET,
     KEY_WORKSPACE,
     KEY_INCREMENTAL,
-    KEY_TABLE_RELATIONSHIP,
-    KEY_INCREMENTAL
+    KEY_TABLE_RELATIONSHIP
 ]
 MANDATORY_IMAGE_PARS = []
 
@@ -60,6 +60,7 @@ if 'KBC_LOGGER_ADDR' in os.environ and 'KBC_LOGGER_PORT' in os.environ:
 
 
 APP_VERSION = '0.0.7'
+MAX_ROW_COUNT = 3_000_000
 
 
 class Component(KBCEnvHandler):
@@ -145,6 +146,9 @@ class Component(KBCEnvHandler):
             logging.error(
                 "No tables are found in input mapping to export into PowerBI.")
             sys.exit(1)
+
+        for table in in_tables:
+            self.check_csv_row_count(table.get("full_path"))
 
         # Activate when oauth in KBC is ready
         # Get Authorization Token
@@ -246,6 +250,20 @@ class Component(KBCEnvHandler):
                     num_of_post_request = 1
 
         logging.info("Extraction finished")
+
+    @staticmethod
+    def check_csv_row_count(csv_file_path):
+        with open(csv_file_path, 'r') as file:
+            csv_reader = csv.reader(file)
+            row_count = sum(1 for _ in csv_reader)
+
+            if row_count > MAX_ROW_COUNT:
+                logging.error(f"CSV file exceeds maximum row count. Found {row_count} rows, "
+                              f"expected {MAX_ROW_COUNT} or less.")
+                logging.error("Push datasets are very limited in their functionality. "
+                              "They're designed only for a near real-time streaming scenario to be consumed by a "
+                              "streaming tile in a dashboard, and not by a Power BI report.")
+                sys.exit(1)
 
 
 """
