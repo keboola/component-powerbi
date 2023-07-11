@@ -296,22 +296,32 @@ class PowerBI:
             sys.exit(1)
 
         if not response.ok:
-            logging.error(response.text)
-            logging.error(info_msg)
-            logging.error("Failed to get response from Power BI API while sending rows to Power BI - "
-                          "Please check API limits at: "
-                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            error_messages = [
+                response.text,
+                info_msg,
+                "Failed to get response from Power BI API while sending rows to Power BI - "
+                "Please check API limits at: "
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations"
+            ]
+
+            error_message = '\n\n'.join(error_messages)
+            logging.error(error_message)
             sys.exit(1)
 
         if response.status_code == 200:
             return
 
         if response.status_code == 429:
-            logging.error(response.text)
-            logging.error(info_msg)
-            logging.error("An error occurred while sending rows to Power BI. Please check the limitations of the "
-                          "Push Datasets API at:"
-                          "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations")
+            error_messages = [
+                response.text,
+                info_msg,
+                "An error occurred while sending rows to Power BI. Please check the limitations of the "
+                "Push Datasets API at:"
+                "https://learn.microsoft.com/en-us/power-bi/developer/embedded/push-datasets-limitations"
+            ]
+
+            error_message = '\n\n'.join(error_messages)
+            logging.error(error_message)
             sys.exit(1)
 
         error_message = response.json()
